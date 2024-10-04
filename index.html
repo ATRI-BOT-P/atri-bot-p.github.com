@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>验证中...</title>
-    <script src="https://recaptcha.net/recaptcha/api.js?render=6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d"></script>
+    <script src="./captcha.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,6 @@
             });
         });
 
-        // 复制Token
         document.getElementById('copy-btn').addEventListener('click', function() {
             const textarea = document.getElementById('g-recaptcha-response');
             textarea.select();
