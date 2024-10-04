@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证中...</title>
+    <script src="https://recaptcha.net/recaptcha/api.js?render=6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        p {
+            margin: 20px 0;
+        }
+        textarea {
+            width: 90%;
+            max-width: 600px;
+            padding: 10px;
+            margin-top: 10px;
+            resize: none;
+            font-family: monospace;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:disabled {
+            background-color: #eeeeee;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>请帮助我们检查您是否为机器人</h1>
+    <p>验证完毕后Token会显示在下方:</p>
+    <textarea id="g-recaptcha-response" rows="5" cols="50" readonly></textarea>
+    
+    <button id="copy-btn" class="button" disabled>复制Token</button>
+
+    <script>
+        document.title = '验证中...';
+
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'homepage'}).then(function(token) {
+                document.getElementById('g-recaptcha-response').value = token;
+
+                document.title = '已完成验证';
+
+                document.getElementById('copy-btn').disabled = false;
+            });
+        });
+
+        // 复制Token
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const textarea = document.getElementById('g-recaptcha-response');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); 
+
+            try {
+                document.execCommand('copy');
+                alert('Token已复制');
+            } catch (err) {
+                alert('无法复制Token请手动复制');
+            }
+        });
+    </script>
+</body>
+</html>
