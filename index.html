@@ -54,32 +54,9 @@
     <button id="copy-btn" class="button" disabled>复制Token</button>
 
     <script>
-        const base62charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-        function stringToByteArray(str) {
-            const byteArray = new Uint8Array(str.length);
-            for (let i = 0; i < str.length; i++) {
-                byteArray[i] = str.charCodeAt(i);
-            }
-            return byteArray;
-        }
-
-        function base62Encode(data) {
-            let byteArray = stringToByteArray(data);
-            let num = BigInt('0x' + Array.from(byteArray).map(b => b.toString(16).padStart(2, '0')).join(''));
-            let encoded = '';
-            while (num > 0) {
-                let remainder = num % BigInt(62);
-                encoded = base62charset[remainder] + encoded;
-                num = num / BigInt(62);
-            }
-            return encoded || '0';
-        }
-
         grecaptcha.ready(function() {
             grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'homepage'}).then(function(token) {
-                const encodedToken = base62Encode(token);
-                document.getElementById('g-recaptcha-response').value = encodedToken;
+                document.getElementById('g-recaptcha-response').value = token;
                 document.title = '已完成验证';
                 document.getElementById('copy-btn').disabled = false;
             });
