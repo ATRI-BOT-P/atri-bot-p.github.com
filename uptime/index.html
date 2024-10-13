@@ -7,14 +7,22 @@
     <style>
         body {
             display: flex;
-            justfy-content: center;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #282c34;
             color: white;
+            overflow: hidden;
+            animation: backgroundFade 5s infinite alternate;
         }
+        
+        @keyframes backgroundFade {
+            0% { background-color: #282c34; }
+            100% { background-color: #1c1f26; }
+        }
+
         .container {
             text-align: center;
             max-width: 600px;
@@ -23,14 +31,44 @@
             border-radius: 10px;
             background-color: #3a3f47;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 1s forwards, pulse 3s infinite;
         }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
         h1 {
             font-size: 36px;
+            letter-spacing: 1px;
+            color: #ff6b81;
+            transition: color 0.5s ease;
         }
+        
+        h1:hover {
+            color: #ffd700;
+        }
+
         span {
             font-weight: bold;
             font-size: 24px;
+            color: #f5f5f5;
         }
+
         footer {
             margin-top: 20px;
             font-size: 14px;
@@ -39,8 +77,8 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>ATRI-BOT Uptime</h1>
+    <div class="container" role="main" aria-labelledby="headline">
+        <h1 id="headline">ATRI-BOT Uptime</h1>
         <p>Current uptime is: <span id="uptime">加载中...</span></p>
     </div>
 
@@ -52,21 +90,31 @@
 
         function updateUptime() {
             const now = Math.floor(Date.now() / 1000);
-            const startTime = parseInt(getQueryParam('start') || 0);
-            const elapsedTime = now - startTime;
-
-            if (isNaN(elapsedTime) || startTime <= 0) {
+            const startTime = parseInt(getQueryParam('start'));
+            
+            if (isNaN(startTime) || startTime <= 0) {
                 document.getElementById("uptime").textContent = "Invalid Timestamp!";
                 clearInterval(interval);
                 return;
             }
 
+            const elapsedTime = now - startTime;
             const days = Math.floor(elapsedTime / (24 * 3600));
             const hours = Math.floor((elapsedTime % (24 * 3600)) / 3600);
             const minutes = Math.floor(((elapsedTime % 3600)) / 60);
             const seconds = elapsedTime % 60;
 
             document.getElementById("uptime").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            animateUptime();
+        }
+
+        function animateUptime() {
+            const uptimeElement = document.getElementById("uptime");
+            uptimeElement.style.transition = "transform 0.2s ease-in-out";
+            uptimeElement.style.transform = "scale(1.1)";
+            setTimeout(() => {
+                uptimeElement.style.transform = "scale(1)";
+            }, 200);
         }
 
         const interval = setInterval(updateUptime, 1000);
