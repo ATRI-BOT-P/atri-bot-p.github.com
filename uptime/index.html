@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uptime Counter</title>
+    <style>
+        body {
+            display: flex;
+            justfy-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #282c34;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #3a3f47;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 36px;
+        }
+        span {
+            font-weight: bold;
+            font-size: 24px;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Uptime Counter</h1>
+        <p>Current uptime is: <span id="uptime">Loading...</span></p>
+    </div>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function updateUptime() {
+            const now = Math.floor(Date.now() / 1000);
+            const startTime = parseInt(getQueryParam('start') || 0);
+            const elapsedTime = now - startTime;
+
+            if (isNaN(elapsedTime) || startTime <= 0) {
+                document.getElementById("uptime").textContent = "Invalid Timestamp!";
+                clearInterval(interval);
+                return;
+            }
+
+            const days = Math.floor(elapsedTime / (24 * 3600));
+            const hours = Math.floor((elapsedTime % (24 * 3600)) / 3600);
+            const minutes = Math.floor(((elapsedTime % 3600)) / 60);
+            const seconds = elapsedTime % 60;
+
+            document.getElementById("uptime").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        const interval = setInterval(updateUptime, 1000);
+
+        window.onload = updateUptime;
+    </script>
+</body>
+</html>
