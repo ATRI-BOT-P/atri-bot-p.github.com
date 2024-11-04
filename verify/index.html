@@ -6,42 +6,108 @@
     <title>ATRI-BOT Verify</title>
     <script src="./captcha.js"></script>
     <style>
-        body{font-family:Arial,sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:#f0f0f0}
-        .container{text-align:center;background:#fff;padding:2rem;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,.1)}
-        button{background:#4CAF50;color:#fff;border:none;padding:10px 20px;font-size:16px;cursor:pointer;border-radius:4px;transition:background .3s}
-        button:hover{background:#45a049}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 1.5rem;
+            color: #00796b;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s, transform 0.2s;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>ATRI-BOT Verify</h1>
-    <button onclick="verify()">Verify</button>
+    <button id="verifyBtn" onclick="verify()">Verify</button>
+    <button id="removeVerifyBtn" onclick="removeVerify()">Remove Verify</button>
 </div>
 <script>
-    function verify(){
-        let params = new URLSearchParams(window.location.search);
+    function verify() {
+        const verifyBtn = document.getElementById('verifyBtn');
+        verifyBtn.disabled = true;  // Disable button
+        const params = new URLSearchParams(window.location.search);
         let qq = params.get('qq');
-        if(!qq){
+        if (!qq) {
             alert('不合法的URL打开');
+            verifyBtn.disabled = false;  // Re-enable button on error
             return;
         }
         qq = atob(qq);
 
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function(token) {
+        grecaptcha.ready(function () {
+            grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function (token) {
                 fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}&token=${encodeURIComponent(token)}`, {
                     method: 'POST'
                 })
                     .then(response => response.json().then(data => ({status: response.status, body: data})))
                     .then(({status, body}) => {
                         alert(`Status: ${status}\nMessage: ${JSON.stringify(body)}`);
+                        verifyBtn.disabled = false;  // Re-enable button after response
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('验证失败');
+                        verifyBtn.disabled = false;  // Re-enable button on error
                     });
             });
         });
+    }
+
+    function removeVerify() {
+        const params = new URLSearchParams(window.location.search);
+        let qq = params.get('qq');
+        if (!qq) {
+            alert('不合法的URL打开');
+            return;
+        }
+        qq = atob(qq);
+
+        fetch(`https://public.meownya.asia/api/removeVerify?qq=${encodeURIComponent(qq)}`, {
+            method: 'POST'
+        })
+            .then(response => response.json().then(data => ({status: response.status, body: data})))
+            .then(({status, body}) => {
+                alert(`Status: ${status}\nMessage: ${JSON.stringify(body)}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('移除验证失败');
+            });
     }
 </script>
 </body>
