@@ -73,7 +73,6 @@
             background-color: rgba(0, 0, 0, 0.4);
         }
         .modal-content {
-            background-color: #fefefe;
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
@@ -81,6 +80,7 @@
             max-width: 500px;
             border-radius: 10px;
             animation: slideIn 0.3s;
+            opacity: 0.9;
         }
         @keyframes slideIn {
             from { transform: translateY(-30px); opacity: 0; }
@@ -98,6 +98,14 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .error {
+            background-color: #ffdddd;
+            border-color: #f44336;
+        }
+        .success {
+            background-color: #f0f9f0;
+            border-color: #4caf50;
+        }
     </style>
 </head>
 <body>
@@ -109,15 +117,26 @@
 
 <!-- Modal -->
 <div id="myModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" id="modalContent">
         <span class="close" onclick="closeModal()">&times;</span>
         <p id="modalMessage"></p>
+        <pre id="modalData" style="display: none;"></pre>
     </div>
 </div>
 
 <script>
-    function showModal(message) {
+    function showModal(message, data, isError = false) {
+        const modalContent = document.getElementById('modalContent');
         document.getElementById('modalMessage').innerText = message;
+        if (data) {
+            const modalData = document.getElementById('modalData');
+            modalData.innerText = JSON.stringify(data, null, 2); // Format data
+            modalData.style.display = 'block';
+        } else {
+            document.getElementById('modalData').style.display = 'none';
+        }
+        
+        modalContent.className = isError ? 'modal-content error' : 'modal-content success';
         document.getElementById('myModal').style.display = "block";
     }
 
@@ -135,22 +154,19 @@
         const params = new URLSearchParams(window.location.search);
         let sessionid = params.get('sessionid');
         if (!sessionid) {
-            showModal('不合法的URL打开');
-            verifyBtn.disabled = false;
+            showModal('不合法的URL打开', null, true);
             return;
         }
-        fetch(`https://public.meownya.asia/api/info?sessionid=${encodeURIComponent(sessionid)}&token=${encodeURIComponent(token)}`, {
+        fetch(`https://public.meownya.asia/api/info?sessionid=${encodeURIComponent(sessionid)}`, {
             method: 'POST'
         })
         .then(response => response.json().then(data => ({status: response.status, body: data})))
         .then(({status, body}) => {
-            showModal(`状态码: ${status}\n消息: ${JSON.stringify(body)}`);
-            verifyBtn.disabled = false;
+            showModal(`状态码: ${status}`, body, status !== 200);
         })
         .catch(error => {
             console.error('Error:', error);
-            showModal('拉取失败' + error.error);
-            verifyBtn.disabled = false;
+            showModal('拉取失败', error, true);
         });
     }
 
@@ -160,7 +176,7 @@
         const params = new URLSearchParams(window.location.search);
         let sessionid = params.get('sessionid');
         if (!sessionid) {
-            showModal('不合法的URL打开');
+            showModal('不合法的URL打开', null, true);
             verifyBtn.disabled = false;
             return;
         }
@@ -172,12 +188,12 @@
                 })
                 .then(response => response.json().then(data => ({status: response.status, body: data})))
                 .then(({status, body}) => {
-                    showModal(`状态码: ${status}\n消息: ${JSON.stringify(body)}`);
+                    showModal(`状态码: ${status}`, body, status !== 200);
                     verifyBtn.disabled = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showModal('验证失败' + error.error);
+                    showModal('验证失败', error, true);
                     verifyBtn.disabled = false;
                 });
             });
@@ -190,7 +206,7 @@
         const params = new URLSearchParams(window.location.search);
         let sessionid = params.get('sessionid');
         if (!sessionid) {
-            showModal('不合法的URL打开');
+            showModal('不合法的URL打开', null, true);
             removeVerifyBtn.disabled = false;
             return;
         }
@@ -200,12 +216,12 @@
         })
         .then(response => response.json().then(data => ({status: response.status, body: data})))
         .then(({status, body}) => {
-            showModal(`状态码: ${status}\n消息: ${JSON.stringify(body)}`);
+            showModal(`状态码: ${status}`, body, status !== 200);
             removeVerifyBtn.disabled = false;
         })
         .catch(error => {
             console.error('Error:', error);
-            showModal('移除验证失败' + error.error);
+            showModal('移除验证失败', error, true);
             removeVerifyBtn.disabled = false;
         });
     }
