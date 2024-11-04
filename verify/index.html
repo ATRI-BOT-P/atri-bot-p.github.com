@@ -8,13 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+            background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
             animation: fadeIn 1s;
         }
         @keyframes fadeIn {
@@ -23,13 +23,12 @@
         }
         .container {
             text-align: center;
-            background: #fff;
-            padding: 3rem;
+            background: #ffffff;
+            padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             max-width: 400px;
             width: 100%;
-            transform: scale(0.95);
             animation: scaleIn 0.5s forwards;
         }
         @keyframes scaleIn {
@@ -37,12 +36,12 @@
             to { transform: scale(1); }
         }
         h1 {
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 1.5rem;
             color: #00796b;
         }
         button {
-            background: #4caf50;
+            background: #009688;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -53,12 +52,12 @@
             margin: 0.5rem;
         }
         button:hover {
-            background: #45a049;
+            background: #00796b;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         button:disabled {
-            background: #a5d6a7;
+            background: #b2dfdb;
             cursor: not-allowed;
         }
         .modal {
@@ -70,7 +69,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.5);
         }
         .modal-content {
             margin: 15% auto;
@@ -99,20 +98,25 @@
             cursor: pointer;
         }
         .error {
-            background-color: #ffdddd;
+            background-color: #ffebee;
             border-color: #f44336;
         }
         .success {
-            background-color: #f0f9f0;
+            background-color: #e8f5e9;
             border-color: #4caf50;
         }
+        .modal-message {
+            text-align: center;
+            font-size: 18px;
+            margin: 0;
+        }
         pre {
-            background: #f8f8f8;
+            background: #f1f1f1;
             padding: 10px;
             border-radius: 5px;
             overflow: auto;
             margin-top: 10px;
-            display: none; /* Initially hidden */
+            display: none;
         }
     </style>
 </head>
@@ -123,11 +127,10 @@
     <button id="removeVerifyBtn" onclick="removeVerify()">Remove Verify</button>
 </div>
 
-<!-- Modal -->
 <div id="myModal" class="modal">
     <div class="modal-content" id="modalContent">
         <span class="close" onclick="closeModal()">&times;</span>
-        <p id="modalMessage"></p>
+        <p class="modal-message" id="modalMessage"></p>
         <pre id="modalData"></pre>
     </div>
 </div>
@@ -136,15 +139,9 @@
     function showModal(message, data, isError = false) {
         const modalContent = document.getElementById('modalContent');
         document.getElementById('modalMessage').innerText = message;
-        
         const modalData = document.getElementById('modalData');
-        if (data) {
-            modalData.innerText = JSON.stringify(data, null, 2); // Format data
-            modalData.style.display = 'block'; // Show data
-        } else {
-            modalData.style.display = 'none'; // Hide data if no data
-        }
-        
+        modalData.innerText = data ? JSON.stringify(data, null, 2) : '';
+        modalData.style.display = data ? 'block' : 'none';
         modalContent.className = isError ? 'modal-content error' : 'modal-content success';
         document.getElementById('myModal').style.display = "block";
     }
@@ -244,7 +241,6 @@
         });
     }
 
-    // Automatically call info function when the page loads
     window.onload = info;
 </script>
 </body>
