@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATRI-BOT Uptime</title>
+  <style>
+    :root {
+      --primary-color-start: #ff6b81;
+      --primary-color-end: #ff8e53;
+      --secondary-color: #f5f5f5;
+      --bg-color: #282c34;
+      --container-bg-color: #3a3f47;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--secondary-color);
+    }
+
+    .container {
+      text-align: center;
+      width: 100%;
+      padding: 40px 20px;
+      background-color: var(--container-bg-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 48px;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--primary-color-start), var(--primary-color-end));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    span {
+      font-weight: bold;
+      font-size: 36px;
+      color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-labelledby="headline">
+    <h1 id="headline">ATRI-BOT Uptime</h1>
+    <p>Current uptime is: <span id="uptime">加载中...</span></p>
+  </div>
+  <script>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function updateUptime() {
+      try {
+        const now = Math.floor(Date.now() / 1000);
+        const startTime = parseInt(getQueryParam('start'));
+        if (isNaN(startTime) || startTime <= 0) {
+          throw new Error('Invalid Timestamp');
+        }
+
+        const elapsedTime = now - startTime;
+        const days = Math.floor(elapsedTime / (24 * 3600));
+        const hours = Math.floor((elapsedTime % (24 * 3600)) / 3600);
+        const minutes = Math.floor((elapsedTime % 3600) / 60);
+        const seconds = elapsedTime % 60;
+
+        document.getElementById("uptime").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      } catch (error) {
+        document.getElementById("uptime").textContent = "Invalid Timestamp!";
+        clearInterval(interval);
+      }
+    }
+
+    const interval = setInterval(updateUptime, 1000);
+    window.onload = updateUptime;
+  </script>
+</body>
+</html>
