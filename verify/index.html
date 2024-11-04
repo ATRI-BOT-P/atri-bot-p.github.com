@@ -59,12 +59,12 @@
 <script>
     function verify() {
         const verifyBtn = document.getElementById('verifyBtn');
-        verifyBtn.disabled = true;  // Disable button
+        verifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
         let qq = params.get('qq');
         if (!qq) {
             alert('不合法的URL打开');
-            verifyBtn.disabled = false;  // Re-enable button on error
+            verifyBtn.disabled = false;
             return;
         }
         qq = atob(qq);
@@ -76,37 +76,42 @@
                 })
                     .then(response => response.json().then(data => ({status: response.status, body: data})))
                     .then(({status, body}) => {
-                        alert(`Status: ${status}\nMessage: ${JSON.stringify(body)}`);
-                        verifyBtn.disabled = false;  // Re-enable button after response
+                        alert(`状态码: ${status}\n消息: ${JSON.stringify(body)}`);
+                        verifyBtn.disabled = false;
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('验证失败');
-                        verifyBtn.disabled = false;  // Re-enable button on error
+                        alert('验证失败' + error.error);
+                        verifyBtn.disabled = false;
                     });
             });
         });
     }
 
     function removeVerify() {
+        const removeVerifyBtn = document.getElementById('removeVerifyBtn');
+        removeVerifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
         let qq = params.get('qq');
         if (!qq) {
             alert('不合法的URL打开');
+            removeVerifyBtn.disabled = false;
             return;
         }
         qq = atob(qq);
 
-        fetch(`https://public.meownya.asia/api/removeVerify?qq=${encodeURIComponent(qq)}`, {
+        fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}`, {
             method: 'POST'
         })
             .then(response => response.json().then(data => ({status: response.status, body: data})))
             .then(({status, body}) => {
-                alert(`Status: ${status}\nMessage: ${JSON.stringify(body)}`);
+                alert(`状态码: ${status}\n消息: ${JSON.stringify(body)}`);
+                removeVerifyBtn.disabled = false;
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('移除验证失败');
+                alert('移除验证失败' + error.error);
+                removeVerifyBtn.disabled = false;
             });
     }
 </script>
