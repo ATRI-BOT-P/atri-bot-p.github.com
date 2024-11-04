@@ -61,17 +61,16 @@
         const verifyBtn = document.getElementById('verifyBtn');
         verifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
-        let qq = params.get('qq');
-        if (!qq) {
+        let sessionid = params.get('sessionid');
+        if (!sessionid) {
             alert('不合法的URL打开');
             verifyBtn.disabled = false;
             return;
         }
-        qq = atob(qq);
 
         grecaptcha.ready(function () {
             grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function (token) {
-                fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}&token=${encodeURIComponent(token)}`, {
+                fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}&token=${encodeURIComponent(token)}`, {
                     method: 'POST'
                 })
                     .then(response => response.json().then(data => ({status: response.status, body: data})))
@@ -92,15 +91,14 @@
         const removeVerifyBtn = document.getElementById('removeVerifyBtn');
         removeVerifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
-        let qq = params.get('qq');
-        if (!qq) {
+        let sessionid = params.get('sessionid');
+        if (!sessionid) {
             alert('不合法的URL打开');
             removeVerifyBtn.disabled = false;
             return;
         }
-        qq = atob(qq);
 
-        fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}`, {
+        fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}`, {
             method: 'POST'
         })
             .then(response => response.json().then(data => ({status: response.status, body: data})))
