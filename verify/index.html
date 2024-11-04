@@ -29,10 +29,12 @@
 
         grecaptcha.ready(function() {
             grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function(token) {
-                fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}&token=${token}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message || '验证成功');
+                fetch(`https://public.meownya.asia/api/verify?qq=${encodeURIComponent(qq)}&token=${encodeURIComponent(token)}`, {
+                    method: 'POST'
+                })
+                    .then(response => response.json().then(data => ({status: response.status, body: data})))
+                    .then(({status, body}) => {
+                        alert(`Status: ${status}\nMessage: ${JSON.stringify(body)}`);
                     })
                     .catch(error => {
                         console.error('Error:', error);
