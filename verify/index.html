@@ -106,6 +106,14 @@
             background-color: #f0f9f0;
             border-color: #4caf50;
         }
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: auto;
+            margin-top: 10px;
+            display: none; /* Initially hidden */
+        }
     </style>
 </head>
 <body>
@@ -120,7 +128,7 @@
     <div class="modal-content" id="modalContent">
         <span class="close" onclick="closeModal()">&times;</span>
         <p id="modalMessage"></p>
-        <pre id="modalData" style="display: none;"></pre>
+        <pre id="modalData"></pre>
     </div>
 </div>
 
@@ -128,12 +136,13 @@
     function showModal(message, data, isError = false) {
         const modalContent = document.getElementById('modalContent');
         document.getElementById('modalMessage').innerText = message;
+        
+        const modalData = document.getElementById('modalData');
         if (data) {
-            const modalData = document.getElementById('modalData');
             modalData.innerText = JSON.stringify(data, null, 2); // Format data
-            modalData.style.display = 'block';
+            modalData.style.display = 'block'; // Show data
         } else {
-            document.getElementById('modalData').style.display = 'none';
+            modalData.style.display = 'none'; // Hide data if no data
         }
         
         modalContent.className = isError ? 'modal-content error' : 'modal-content success';
@@ -160,13 +169,16 @@
         fetch(`https://public.meownya.asia/api/info?sessionid=${encodeURIComponent(sessionid)}`, {
             method: 'POST'
         })
-        .then(response => response.json().then(data => ({status: response.status, body: data})))
-        .then(({status, body}) => {
-            showModal(`状态码: ${status}`, body, status !== 200);
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(body => {
+            showModal(body.message || '获取成功', body.data || null, body.status !== 200);
         })
         .catch(error => {
             console.error('Error:', error);
-            showModal('拉取失败', error, true);
+            showModal('拉取失败', { error: error.message }, true);
         });
     }
 
@@ -186,14 +198,17 @@
                 fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}&token=${encodeURIComponent(token)}`, {
                     method: 'POST'
                 })
-                .then(response => response.json().then(data => ({status: response.status, body: data})))
-                .then(({status, body}) => {
-                    showModal(`状态码: ${status}`, body, status !== 200);
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(body => {
+                    showModal(body.message || '验证成功', body.data || null, body.status !== 200);
                     verifyBtn.disabled = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showModal('验证失败', error, true);
+                    showModal('验证失败', { error: error.message }, true);
                     verifyBtn.disabled = false;
                 });
             });
@@ -214,14 +229,17 @@
         fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}`, {
             method: 'POST'
         })
-        .then(response => response.json().then(data => ({status: response.status, body: data})))
-        .then(({status, body}) => {
-            showModal(`状态码: ${status}`, body, status !== 200);
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(body => {
+            showModal(body.message || '移除验证成功', body.data || null, body.status !== 200);
             removeVerifyBtn.disabled = false;
         })
         .catch(error => {
             console.error('Error:', error);
-            showModal('移除验证失败', error, true);
+            showModal('移除验证失败', { error: error.message }, true);
             removeVerifyBtn.disabled = false;
         });
     }
