@@ -158,12 +158,12 @@
 
     function info() {
         const params = new URLSearchParams(window.location.search);
-        let sessionid = params.get('sessionid');
-        if (!sessionid) {
+        let key = params.get('key');
+        if (!key) {
             showModal('参数错误, 请完整的打开URL', null, true);
             return;
         }
-        fetch(`https://public.meownya.asia/api/info?sessionid=${encodeURIComponent(sessionid)}`, {
+        fetch(`https://public.meownya.asia/api/info?key=${encodeURIComponent(key)}`, {
             method: 'POST'
         })
         .then(response => {
@@ -182,8 +182,8 @@
         const verifyBtn = document.getElementById('verifyBtn');
         verifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
-        let sessionid = params.get('sessionid');
-        if (!sessionid) {
+        let key = params.get('key');
+        if (!key) {
             showModal('参数错误, 请完整的打开URL', null, true);
             verifyBtn.disabled = false;
             return;
@@ -191,7 +191,7 @@
 
         grecaptcha.ready(function () {
             grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function (token) {
-                fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}&token=${encodeURIComponent(token)}`, {
+                fetch(`https://public.meownya.asia/api/verify?key=${encodeURIComponent(key)}&token=${encodeURIComponent(token)}`, {
                     method: 'POST'
                 })
                 .then(response => {
