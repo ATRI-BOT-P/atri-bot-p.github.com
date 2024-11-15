@@ -2,7 +2,7 @@
 # **ATRI-BOT** API 文档
 
 ## API Key
-- 在私聊场景下向 **ATRi-BOT** 发送`/api`命令, 若需要获得新的API Key则使用`/api new`
+- 在私聊场景下向 **ATRI-BOT** 发送`/api`命令, 若需要获得新的API Key则使用`/api new`
 - API Key遵循规范, 在需要API Key的每个请求url query包含`key=string`参数
 
 ### Endpoint
