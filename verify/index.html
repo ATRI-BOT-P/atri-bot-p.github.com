@@ -123,8 +123,8 @@
 <body>
 <div class="container">
     <h1>ATRI-BOT Verify</h1>
-    <button id="verifyBtn" onclick="verify()">Verify</button>
-    <button id="removeVerifyBtn" onclick="removeVerify()">Remove Verify</button>
+    <button id="verifyBtn" onclick="verify()">验证</button>
+    <button id="removeVerifyBtn" onclick="removeVerify()">删除验证</button>
 </div>
 
 <div id="myModal" class="modal">
@@ -184,7 +184,7 @@
         const params = new URLSearchParams(window.location.search);
         let sessionid = params.get('sessionid');
         if (!sessionid) {
-            showModal('不合法的URL打开', null, true);
+            showModal('参数错误, 请完整的打开URL', null, true);
             verifyBtn.disabled = false;
             return;
         }
@@ -214,14 +214,14 @@
         const removeVerifyBtn = document.getElementById('removeVerifyBtn');
         removeVerifyBtn.disabled = true;
         const params = new URLSearchParams(window.location.search);
-        let sessionid = params.get('sessionid');
-        if (!sessionid) {
+        let key = params.get('key');
+        if (!key) {
             showModal('参数错误, 请完整的打开URL', null, true);
             removeVerifyBtn.disabled = false;
             return;
         }
 
-        fetch(`https://public.meownya.asia/api/verify?sessionid=${encodeURIComponent(sessionid)}`, {
+        fetch(`https://public.meownya.asia/api/verify?key=${encodeURIComponent(key)}`, {
             method: 'POST'
         })
         .then(response => {
