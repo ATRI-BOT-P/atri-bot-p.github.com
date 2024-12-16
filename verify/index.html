@@ -163,7 +163,7 @@
             showModal('参数错误, 请完整的打开URL', null, true);
             return;
         }
-        fetch(`https://public.meownya.asia/api/info?key=${encodeURIComponent(key)}`, {
+        fetch(`https://api.meownya.asia/v1/key?key=${encodeURIComponent(key)}&vtoken=info`, {
             method: 'POST'
         })
         .then(response => {
@@ -191,7 +191,7 @@
 
         grecaptcha.ready(function () {
             grecaptcha.execute('6LdWX1cqAAAAABF5V15pI1ZoLa4gMSnh0kCAP01d', {action: 'verify'}).then(function (token) {
-                fetch(`https://public.meownya.asia/api/verify?key=${encodeURIComponent(key)}&token=${encodeURIComponent(token)}`, {
+                fetch(`https://api.meownya.asia/v1/verify?key=${encodeURIComponent(key)}&vtoken=${encodeURIComponent(token)}`, {
                     method: 'POST'
                 })
                 .then(response => {
@@ -221,7 +221,7 @@
             return;
         }
 
-        fetch(`https://public.meownya.asia/api/verify?key=${encodeURIComponent(key)}`, {
+        fetch(`https://api.meownya.asia/v1/verify?key=${encodeURIComponent(key)}`, {
             method: 'POST'
         })
         .then(response => {
